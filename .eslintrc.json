@@ -12,6 +12,7 @@
     "import/no-extraneous-dependencies": "off",
     "react/require-default-props": "off",
     "class-methods-use-this": "off",
-    "no-restricted-syntax": "off"
+    "no-restricted-syntax": "off",
+    "no-promise-executor-return": "off"
   }
 }
