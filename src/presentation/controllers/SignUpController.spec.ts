@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { MissingParamError } from '../errors';
+import { InvalidParamError, MissingParamError } from '../errors';
 import { SignUpController } from './SignUpController';
 
 type MakeSutReturn = {
@@ -69,6 +69,23 @@ describe('SignUpController', () => {
     expect(httpResponse.statusCode).toBe(400);
     expect(httpResponse.body).toEqual(
       new MissingParamError('passwordConfirmation')
+    );
+  });
+
+  it('should return 400 if no passwordConfirmation and password are not equals', async () => {
+    const { sut } = makeSut();
+    const httpRequest = {
+      body: {
+        name: faker.name.findName(),
+        email: faker.internet.email(),
+        password: 'password',
+        passwordConfirmation: 'passwordConfirmation',
+      },
+    };
+    const httpResponse = await sut.handle(httpRequest);
+    expect(httpResponse.statusCode).toBe(400);
+    expect(httpResponse.body).toEqual(
+      new InvalidParamError('passwordConfirmation')
     );
   });
 });
