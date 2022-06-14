@@ -1,5 +1,9 @@
+/* eslint-disable @typescript-eslint/return-await */
+/* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { faker } from '@faker-js/faker';
+import { AccountModel } from '../../domain/models';
+import { AddAccount, AddAccountModel } from '../../domain/useCases';
 import { InvalidParamError, MissingParamError, ServerError } from '../errors';
 import { EmailValidator } from '../protocols/EmailValidator';
 import { SignUpController } from './SignUpController';
@@ -13,17 +17,35 @@ const makeEmailValidator = (): EmailValidator => {
   return new EmailValidatorStub();
 };
 
+const makeAddAccount = (): AddAccount => {
+  class AddAccountStub implements AddAccount {
+    async add(account: AddAccountModel): Promise<AccountModel> {
+      const accountCreated = {
+        id: faker.datatype.uuid(),
+        name: faker.name.findName(),
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+      };
+      return new Promise((resolve) => resolve(accountCreated));
+    }
+  }
+  return new AddAccountStub();
+};
+
 type MakeSutReturn = {
   sut: SignUpController;
   emailValidatorStub: EmailValidator;
+  addAccountStub: AddAccount;
 };
 
 const makeSut = (): MakeSutReturn => {
   const emailValidatorStub = makeEmailValidator();
-  const sut = new SignUpController(emailValidatorStub);
+  const addAccountStub = makeAddAccount();
+  const sut = new SignUpController(emailValidatorStub, addAccountStub);
   return {
     sut,
     emailValidatorStub,
+    addAccountStub,
   };
 };
 
@@ -142,6 +164,27 @@ describe('SignUpController', () => {
     jest.spyOn(emailValidatorStub, 'isValid').mockImplementation(() => {
       throw new Error();
     });
+    const password = faker.internet.password();
+    const httpRequest = {
+      body: {
+        name: faker.name.findName(),
+        email: faker.internet.email(),
+        password,
+        passwordConfirmation: password,
+      },
+    };
+    const httpResponse = await sut.handle(httpRequest);
+    expect(httpResponse.statusCode).toBe(500);
+    expect(httpResponse.body).toEqual(new ServerError());
+  });
+
+  it('should return 500 if AddAccount throws', async () => {
+    const { sut, addAccountStub } = makeSut();
+    jest
+      .spyOn(addAccountStub, 'add')
+      .mockImplementationOnce(
+        () => new Promise((_, reject) => reject(new Error()))
+      );
     const password = faker.internet.password();
     const httpRequest = {
       body: {
