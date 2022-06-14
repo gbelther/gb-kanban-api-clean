@@ -7,12 +7,11 @@
   },
   "rules": {
     "no-console": 1,
-    "react/react-in-jsx-scope": "off",
     "import/prefer-default-export": "off",
     "import/extensions": "off",
     "import/no-extraneous-dependencies": "off",
     "react/require-default-props": "off",
-    "react/jsx-props-no-spreading": "off",
-    "react/jsx-no-bind": "off"
+    "class-methods-use-this": "off",
+    "no-restricted-syntax": "off"
   }
 }
