@@ -198,4 +198,24 @@ describe('SignUpController', () => {
     expect(httpResponse.statusCode).toBe(500);
     expect(httpResponse.body).toEqual(new ServerError());
   });
+
+  it('should call add account with correct params', async () => {
+    const { sut, addAccountStub } = makeSut();
+    const addAccountSpy = jest.spyOn(addAccountStub, 'add');
+    const password = faker.internet.password();
+    const httpRequest = {
+      body: {
+        name: faker.name.findName(),
+        email: faker.internet.email(),
+        password,
+        passwordConfirmation: password,
+      },
+    };
+    await sut.handle(httpRequest);
+    expect(addAccountSpy).toHaveBeenCalledWith({
+      name: httpRequest.body.name,
+      email: httpRequest.body.email,
+      password: httpRequest.body.password,
+    });
+  });
 });
