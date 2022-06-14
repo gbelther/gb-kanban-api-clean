@@ -21,10 +21,10 @@ const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     async add(account: AddAccountModel): Promise<AccountModel> {
       const accountCreated = {
-        id: faker.datatype.uuid(),
-        name: faker.name.findName(),
-        email: faker.internet.email(),
-        password: faker.internet.password(),
+        id: 'valid_id',
+        name: 'valid_name',
+        email: 'valid_email',
+        password: 'valid_password',
       };
       return new Promise((resolve) => resolve(accountCreated));
     }
@@ -216,6 +216,27 @@ describe('SignUpController', () => {
       name: httpRequest.body.name,
       email: httpRequest.body.email,
       password: httpRequest.body.password,
+    });
+  });
+
+  it('should return 200 if valid data is provided', async () => {
+    const { sut } = makeSut();
+    const password = faker.internet.password();
+    const httpRequest = {
+      body: {
+        name: 'valid_name',
+        email: 'valid_email',
+        password: 'valid_password',
+        passwordConfirmation: 'valid_password',
+      },
+    };
+    const httpResponse = await sut.handle(httpRequest);
+    expect(httpResponse.statusCode).toBe(200);
+    expect(httpResponse.body).toEqual({
+      id: 'valid_id',
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password',
     });
   });
 });
