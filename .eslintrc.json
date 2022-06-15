@@ -13,6 +13,7 @@
     "react/require-default-props": "off",
     "class-methods-use-this": "off",
     "no-restricted-syntax": "off",
-    "no-promise-executor-return": "off"
+    "no-promise-executor-return": "off",
+    "guard-for-in": "off"
   }
 }
