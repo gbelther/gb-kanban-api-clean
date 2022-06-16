@@ -7,6 +7,9 @@ jest.mock('bcrypt', () => ({
   async hash(): Promise<string> {
     return 'hash';
   },
+  async compare(): Promise<boolean> {
+    return true;
+  },
 }));
 
 const makeSut = (salt: number = faker.datatype.number()): BcryptAdapter =>
@@ -33,5 +36,14 @@ describe('Bcrypt Adapter', () => {
     jest.spyOn(bcrypt, 'hash').mockImplementationOnce(throwError);
     const hashPromise = sut.hash(faker.random.word());
     await expect(hashPromise).rejects.toThrow();
+  });
+
+  it('should be able to call compare with correct value', async () => {
+    const sut = makeSut();
+    const compareSpy = jest.spyOn(bcrypt, 'compare');
+    const passwordWithHash = faker.internet.password();
+    const hash = faker.datatype.uuid();
+    await sut.compare(passwordWithHash, hash);
+    expect(compareSpy).toHaveBeenCalledWith(passwordWithHash, hash);
   });
 });
