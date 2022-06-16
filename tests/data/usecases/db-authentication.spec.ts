@@ -177,4 +177,13 @@ describe('DbAuthentication', () => {
     );
     expect(updateAccessTokenRepositorySpy.token).toBe(encrypterSpy.token);
   });
+
+  it('should be able to throw if UpdateAccessToken throws', async () => {
+    const { sut, updateAccessTokenRepositorySpy } = makeSut();
+    jest
+      .spyOn(updateAccessTokenRepositorySpy, 'updateAccessToken')
+      .mockImplementationOnce(throwError);
+    const authResult = sut.auth(mockAuthenticationParams());
+    await expect(authResult).rejects.toThrow();
+  });
 });
