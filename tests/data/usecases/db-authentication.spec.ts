@@ -142,4 +142,11 @@ describe('DbAuthentication', () => {
     const authResult = await sut.auth(mockAuthenticationParams());
     expect(authResult).toBeUndefined();
   });
+
+  it('should be able to call Encrypter with correct values', async () => {
+    const { sut, encrypterSpy, loadAccountByEmailRepositorySpy } = makeSut();
+    const authenticationParams = mockAuthenticationParams();
+    await sut.auth(authenticationParams);
+    expect(encrypterSpy.value).toBe(loadAccountByEmailRepositorySpy.result.id);
+  });
 });
