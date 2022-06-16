@@ -15,6 +15,7 @@
     "no-restricted-syntax": "off",
     "no-promise-executor-return": "off",
     "guard-for-in": "off",
-    "@typescript-eslint/lines-between-class-members": "off"
+    "@typescript-eslint/lines-between-class-members": "off",
+    "consistent-return": "off"
   }
 }
