@@ -18,4 +18,10 @@ describe('Bcrypt Adapter', () => {
     const hash = await sut.hash(faker.random.word());
     expect(hash).toBe('hash');
   });
+
+  it('should be able to return a hash when succeeds', async () => {
+    const sut = makeSut();
+    const hash = await sut.hash(faker.random.word());
+    expect(hash).toBe('hash');
+  });
 });
