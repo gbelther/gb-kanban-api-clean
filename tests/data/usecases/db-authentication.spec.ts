@@ -156,4 +156,11 @@ describe('DbAuthentication', () => {
     const authPromise = sut.auth(mockAuthenticationParams());
     await expect(authPromise).rejects.toThrow();
   });
+
+  it('should be able to return Authentication.Result if auth succeeds', async () => {
+    const { sut, encrypterSpy, loadAccountByEmailRepositorySpy } = makeSut();
+    const authResult = await sut.auth(mockAuthenticationParams());
+    expect(authResult.accessToken).toBe(encrypterSpy.token);
+    expect(authResult.name).toBe(loadAccountByEmailRepositorySpy.result.name);
+  });
 });
