@@ -10,6 +10,7 @@ import {
 } from '../../../src/data/protocols/db/account';
 import { DbAuthentication } from '../../../src/data/usecases/db-authentication';
 import { Authentication } from '../../../src/domain/usecases';
+import { throwError } from '../../domain/mocks';
 
 class LoadAccountByEmailRepositorySpy implements LoadAccountByEmailRepository {
   email: string;
@@ -100,5 +101,14 @@ describe('DbAuthentication', () => {
     expect(loadAccountByEmailRepositorySpy.email).toBe(
       authenticationParams.email
     );
+  });
+
+  it('should be able to throw if LoadAccountByEmailRepository throw', async () => {
+    const { sut, loadAccountByEmailRepositorySpy } = makeSut();
+    jest
+      .spyOn(loadAccountByEmailRepositorySpy, 'loadByEmail')
+      .mockImplementationOnce(throwError);
+    const authPromise = sut.auth(mockAuthenticationParams());
+    await expect(authPromise).rejects.toThrow();
   });
 });
