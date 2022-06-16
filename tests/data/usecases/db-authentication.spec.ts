@@ -128,4 +128,11 @@ describe('DbAuthentication', () => {
       loadAccountByEmailRepositorySpy.result.password
     );
   });
+
+  it('should be able to throw if HashComparer throws', async () => {
+    const { sut, hashComparerSpy } = makeSut();
+    jest.spyOn(hashComparerSpy, 'compare').mockImplementationOnce(throwError);
+    const authPromise = sut.auth(mockAuthenticationParams());
+    await expect(authPromise).rejects.toThrow();
+  });
 });
