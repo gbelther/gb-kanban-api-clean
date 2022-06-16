@@ -163,4 +163,18 @@ describe('DbAuthentication', () => {
     expect(authResult.accessToken).toBe(encrypterSpy.token);
     expect(authResult.name).toBe(loadAccountByEmailRepositorySpy.result.name);
   });
+
+  it('should be able to call UpdateAccessToken with correct values', async () => {
+    const {
+      sut,
+      updateAccessTokenRepositorySpy,
+      loadAccountByEmailRepositorySpy,
+      encrypterSpy,
+    } = makeSut();
+    await sut.auth(mockAuthenticationParams());
+    expect(updateAccessTokenRepositorySpy.id).toBe(
+      loadAccountByEmailRepositorySpy.result.id
+    );
+    expect(updateAccessTokenRepositorySpy.token).toBe(encrypterSpy.token);
+  });
 });
