@@ -111,4 +111,11 @@ describe('DbAuthentication', () => {
     const authPromise = sut.auth(mockAuthenticationParams());
     await expect(authPromise).rejects.toThrow();
   });
+
+  it('should be able to return none if LoadAccountByEmailRepository returns none', async () => {
+    const { sut, loadAccountByEmailRepositorySpy } = makeSut();
+    loadAccountByEmailRepositorySpy.result = null;
+    const authResult = await sut.auth(mockAuthenticationParams());
+    expect(authResult).toBeUndefined();
+  });
 });
