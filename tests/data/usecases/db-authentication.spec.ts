@@ -135,4 +135,11 @@ describe('DbAuthentication', () => {
     const authPromise = sut.auth(mockAuthenticationParams());
     await expect(authPromise).rejects.toThrow();
   });
+
+  it('should be able to return none if HashComparer returns falsy', async () => {
+    const { sut, hashComparerSpy } = makeSut();
+    hashComparerSpy.isValid = false;
+    const authResult = await sut.auth(mockAuthenticationParams());
+    expect(authResult).toBeUndefined();
+  });
 });
