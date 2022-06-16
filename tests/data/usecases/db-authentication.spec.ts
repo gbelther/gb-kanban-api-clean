@@ -118,4 +118,14 @@ describe('DbAuthentication', () => {
     const authResult = await sut.auth(mockAuthenticationParams());
     expect(authResult).toBeUndefined();
   });
+
+  it('should be able to call HashComparer with correct values', async () => {
+    const { sut, hashComparerSpy, loadAccountByEmailRepositorySpy } = makeSut();
+    const authenticationParams = mockAuthenticationParams();
+    await sut.auth(authenticationParams);
+    expect(hashComparerSpy.plaintext).toBe(authenticationParams.password);
+    expect(hashComparerSpy.digest).toBe(
+      loadAccountByEmailRepositorySpy.result.password
+    );
+  });
 });
